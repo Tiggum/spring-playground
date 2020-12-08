@@ -24,4 +24,7 @@ public class MathService{
         return sum;
     }
 
+    public static Integer volume(int length, int width, int height) {
+        return length * width * height;
+    }
 }

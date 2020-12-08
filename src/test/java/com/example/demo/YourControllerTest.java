@@ -6,8 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -71,6 +70,34 @@ public class YourControllerTest {
         this.mvc.perform(post("/math/sum?n=2&n=4&n=6&n=8"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("20"));
+    }
+
+    @Test
+    public void testGetVolume() throws Exception {
+        this.mvc.perform(get("/math/volume/2/3/5"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("The volume of a 2x3x5 rectangle is 30"));
+    }
+
+    @Test
+    public void testPOSTVolume() throws Exception {
+        this.mvc.perform(post("/math/volume/2/3/5"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("The volume of a 2x3x5 rectangle is 30"));
+    }
+
+    @Test
+    public void testPATCHVolume() throws Exception {
+        this.mvc.perform(patch("/math/volume/2/3/5"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("The volume of a 2x3x5 rectangle is 30"));
+    }
+
+    @Test
+    public void testPUTVolume() throws Exception {
+        this.mvc.perform(put("/math/volume/2/3/5"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("The volume of a 2x3x5 rectangle is 30"));
     }
 
 
