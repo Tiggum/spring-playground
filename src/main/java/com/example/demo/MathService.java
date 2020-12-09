@@ -27,4 +27,12 @@ public class MathService{
     public static Integer volume(int length, int width, int height) {
         return length * width * height;
     }
+
+    public static Double circleArea(int radius) {
+        return Math.PI * Math.pow(radius, 2);
+    }
+
+    public static Integer rectangleArea(int x, int y){
+        return x * y;
+    }
 }
