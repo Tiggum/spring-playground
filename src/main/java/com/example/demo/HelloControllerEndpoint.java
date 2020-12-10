@@ -1,9 +1,12 @@
 package com.example.demo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Integer.parseInt;
@@ -58,15 +61,15 @@ public class HelloControllerEndpoint {
         Flight flight = new Flight();
         flight.setDate(new Date());
 
-        Passenger passenger = new Passenger();
+        Flight.Ticket.Passenger passenger = new Flight.Ticket.Passenger();
         passenger.setFirstName("caden");
         passenger.setLastName("reynolds");
 
-        Ticket ticket = new Ticket();
+        Flight.Ticket ticket = new Flight.Ticket();
         ticket.setPassenger(passenger);
         ticket.setPrice(100);
 
-        Ticket[] tickets = new Ticket[]{ticket};
+        Flight.Ticket[] tickets = new Flight.Ticket[]{ticket};
         flight.setTickets(tickets);
 
         return flight;
@@ -77,29 +80,29 @@ public class HelloControllerEndpoint {
         Flight flight1 = new Flight();
         flight1.setDate(new Date());
 
-        Passenger passenger1 = new Passenger();
+        Flight.Ticket.Passenger passenger1 = new Flight.Ticket.Passenger();
         passenger1.setFirstName("caden");
         passenger1.setLastName("reynolds");
 
-        Ticket ticket1 = new Ticket();
+        Flight.Ticket ticket1 = new Flight.Ticket();
         ticket1.setPassenger(passenger1);
         ticket1.setPrice(100);
 
-        Ticket[] tickets1 = new Ticket[]{ticket1};
+        Flight.Ticket[] tickets1 = new Flight.Ticket[]{ticket1};
         flight1.setTickets(tickets1);
 
         Flight flight2 = new Flight();
         flight2.setDate(new Date());
 
-        Passenger passenger2 = new Passenger();
+        Flight.Ticket.Passenger passenger2 = new Flight.Ticket.Passenger();
         passenger2.setFirstName("Taylor");
         passenger2.setLastName("reynolds");
 
-        Ticket ticket2 = new Ticket();
+        Flight.Ticket ticket2 = new Flight.Ticket();
         ticket2.setPassenger(passenger2);
-        ticket2.setPrice(100);
+        ticket2.setPrice(250);
 
-        Ticket[] tickets2 = new Ticket[]{ticket2};
+        Flight.Ticket[] tickets2 = new Flight.Ticket[]{ticket2};
         flight2.setTickets(tickets2);
 
         return new Flight[]{flight1, flight2};
@@ -111,7 +114,7 @@ public class HelloControllerEndpoint {
         @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
         private Date date;
         private Ticket[] tickets;
-
+        @JsonProperty("date")
         public Date getDate() {
             return date;
         }
@@ -119,7 +122,7 @@ public class HelloControllerEndpoint {
         public void setDate(Date date) {
             this.date = date;
         }
-
+        @JsonProperty("tickets")
         public Ticket[] getTickets() {
             return tickets;
         }
@@ -127,50 +130,65 @@ public class HelloControllerEndpoint {
         public void setTickets(Ticket[] tickets) {
             this.tickets = tickets;
         }
+
+        public static class Ticket{
+            private Passenger passenger;
+            private int price;
+            @JsonProperty("passenger")
+            public Passenger getPassenger() {
+                return passenger;
+            }
+
+            public void setPassenger(Passenger passenger) {
+                this.passenger = passenger;
+            }
+            @JsonProperty("price")
+            public int getPrice() {
+                return price;
+            }
+
+            public void setPrice(int price) {
+                this.price = price;
+            }
+
+            public static class Passenger{
+                private String firstName;
+                private String lastName;
+
+                @JsonProperty("lastName")
+                public String getLastName() {
+                    return lastName;
+                }
+
+                public void setLastName(String lastName) {
+                    this.lastName = lastName;
+                }
+                @JsonProperty("firstName")
+                public String getFirstName() {
+                    return firstName;
+                }
+
+                public void setFirstName(String firstName) {
+                    this.firstName = firstName;
+                }
+            }
+
+        }
     }
 
-    public static class Passenger{
-        private String firstName;
-        private String lastName;
+    @PostMapping("/flights/tickets/total")
+    public Map<String, Integer> total(@RequestBody Flight flight){
+        Flight.Ticket[] tickets = flight.getTickets();
 
-        public String getLastName() {
-            return lastName;
+        int sum = 0;
+
+        for (Flight.Ticket ticket : tickets){
+            sum+= ticket.getPrice();
         }
 
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
+        HashMap<String, Integer> total = new HashMap<String, Integer>();
+        total.put("result", sum);
+        return total;
     }
-
-    public static class Ticket{
-        private Passenger passenger;
-        private int price;
-
-        public Passenger getPassenger() {
-            return passenger;
-        }
-
-        public void setPassenger(Passenger passenger) {
-            this.passenger = passenger;
-        }
-
-        public int getPrice() {
-            return price;
-        }
-
-        public void setPrice(int price) {
-            this.price = price;
-        }
-
-    }
-
 }
 
