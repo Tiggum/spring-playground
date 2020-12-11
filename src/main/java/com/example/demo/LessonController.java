@@ -1,7 +1,10 @@
 package com.example.demo;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +41,20 @@ public class LessonController {
         lesson.setId(id);
         return this.repository.save(lesson);
     }
+
+    @GetMapping("/find/{title}")
+    public Lesson getTitle(@PathVariable String title){
+        return this.repository.findByTitle(title);
+    }
+
+    @GetMapping("/between")
+    public List<Lesson> getDateBetween(@RequestParam
+                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date1,
+                                       @RequestParam
+                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date2){
+        return this.repository.findAllByDeliveredOnBetween(date1, date2);
+    }
+
 
 }
 
