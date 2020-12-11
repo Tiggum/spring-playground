@@ -33,5 +33,11 @@ public class LessonController {
         this.repository.deleteById(id);
     }
 
+    @PatchMapping("/{id}")
+    public Lesson patchLesson(@PathVariable long id, @RequestBody Lesson lesson) {
+        lesson.setId(id);
+        return this.repository.save(lesson);
+    }
+
 }
 
